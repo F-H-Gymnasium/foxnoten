@@ -27,8 +27,8 @@ app.post('/login', (req, res) => {
 
     console.log(`Login-Versuch von: ${username} mit Rolle: ${role}`);
 
-    if (USERS[username] && USERS[username].password === password) {
-        // Erfolgreich! Weiterleitung zur dashboard.html, die im public-Ordner liegt
+    if (username === "Admin" && password === "Admin123") {
+        // Erfolgreich! Der Server leitet den Browser per GET weiter
         return res.redirect('/dashboard.html');
     } else {
         return res.send('<h1>Fehler: Falsche Anmeldedaten!</h1><a href="/">Zurück zum Login</a>');
