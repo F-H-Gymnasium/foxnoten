@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anmelden I foxNoten</title>
+    <title>Anmelden | foxNoten</title>
     <style>
         * {
             box-sizing: border-box;
@@ -20,7 +20,6 @@
             min-height: 100vh;
         }
 
-        /* Obere blaue Branding-Bar */
         .header-top {
             background-color: #003a6b;
             color: white;
@@ -31,10 +30,9 @@
         }
         
         .header-top span {
-            color: #c0d822; /* Das typische Limettengrün */
+            color: #c0d822;
         }
 
-        /* Willkommens-Schriftzug darunter */
         .welcome-title {
             padding: 25px 20px;
             font-size: 22px;
@@ -43,11 +41,6 @@
             background-color: white;
         }
 
-        .welcome-title strong {
-            font-weight: bold;
-        }
-
-        /* Zweispaltiges Layout-Raster */
         .main-container {
             display: flex;
             width: 100%;
@@ -65,7 +58,6 @@
             overflow: hidden;
         }
 
-        /* Header-Bereich der Boxen */
         .panel-header {
             background-color: #003a6b;
             color: white;
@@ -79,7 +71,6 @@
             padding: 25px;
         }
 
-        /* Schüler und Lehrer Buttons */
         .role-toggle {
             text-align: center;
             margin-bottom: 25px;
@@ -93,6 +84,14 @@
             cursor: pointer;
             margin: 5px;
             font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        /* Aktiver/Inaktiver Zustand der Auswahl-Buttons */
+        .btn-role.inactive {
+            background-color: #f0f0f0;
+            color: #888;
+            border-color: #ccc;
         }
 
         .btn-schueler {
@@ -107,7 +106,6 @@
             border-color: #a3b919;
         }
 
-        /* Eingabefelder mit Icons */
         .form-group {
             width: 260px;
             margin: 0 auto 12px auto;
@@ -121,7 +119,6 @@
             border-radius: 3px;
             font-size: 14px;
             color: #555;
-            background-color: #fff;
         }
 
         .icon-placeholder {
@@ -141,31 +138,22 @@
             margin: 15px 0;
         }
 
-        .forgot-password:hover {
-            text-decoration: underline;
-        }
-
-        /* Anmelden Button */
         .btn-submit {
             display: block;
             width: 110px;
             margin: 10px auto 0 auto;
-            background-color: #c0d822;
-            color: #222;
-            border: 1px solid #a3b919;
             padding: 7px 0;
             font-size: 13px;
             font-weight: bold;
             border-radius: 3px;
             cursor: pointer;
             text-align: center;
+            border: 1px solid #a3b919;
+            background-color: #c0d822;
+            color: #222;
         }
 
-        .btn-submit:hover {
-            background-color: #afc51e;
-        }
-
-        /* Gelbe Info-Box rechts */
+        /* Demo Warnbox */
         .demo-banner {
             background-color: #fffadc;
             border: 1px solid #f1e39d;
@@ -174,7 +162,6 @@
             font-size: 13px;
             border-radius: 3px;
             margin-bottom: 20px;
-            line-height: 1.4;
         }
 
         .demo-banner strong {
@@ -202,10 +189,6 @@
             margin-bottom: 5px;
         }
 
-        .info-link:hover {
-            text-decoration: underline;
-        }
-
         .info-text {
             font-size: 13px;
             color: #444;
@@ -222,7 +205,6 @@
             text-decoration: none;
         }
 
-        /* Blauer Footer am Seitenende */
         .footer-bar {
             background-color: #003a6b;
             color: white;
@@ -232,16 +214,6 @@
             margin-top: auto;
             border-top: 3px solid #c0d822;
         }
-
-        .footer-bar a {
-            color: white;
-            text-decoration: none;
-            margin: 0 8px;
-        }
-        
-        .footer-bar a:hover {
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
@@ -250,7 +222,7 @@
         fox<span>Noten</span>
     </div>
 
-    <div class="welcome-title">
+    <div class="welcome-title" id="mainTitle">
         Willkommen in FoxNoten - <strong>Demoportal FoxNoten</strong>
     </div>
 
@@ -261,11 +233,13 @@
             <div class="panel-body">
                 
                 <div class="role-toggle">
-                    <button type="button" class="btn-role btn-schueler">Schüler-Login</button>
-                    <button type="button" class="btn-role btn-lehrer">Lehrer-Login</button>
+                    <button type="button" id="schuelerBtn" class="btn-role btn-schueler inactive" onclick="setRole('schueler')">Schüler-Login</button>
+                    <button type="button" id="lehrerBtn" class="btn-role btn-lehrer" onclick="setRole('lehrer')">Lehrer-Login</button>
                 </div>
 
                 <form action="/login" method="POST">
+                    <input type="hidden" id="userRole" name="role" value="lehrer">
+
                     <div class="form-group">
                         <span class="icon-placeholder">👤</span>
                         <input type="text" name="username" placeholder="Nutzer" required>
@@ -278,7 +252,7 @@
 
                     <a href="#" class="forgot-password">Passwort vergessen?</a>
 
-                    <button type="submit" class="btn-submit">Anmelden</button>
+                    <button type="submit" class="btn-submit" id="submitBtn">Anmelden</button>
                 </form>
 
             </div>
@@ -286,39 +260,73 @@
 
         <div class="column">
             <div class="panel-header">Informationen</div>
-            <div class="panel-body">
-                
+            <div class="panel-body" id="infoContent">
                 <div class="demo-banner">
-                    <strong>Beta-Version!</strong> Portal noch in der Beta-Version.
+                    <strong>Beta-Version!</strong> Dieses Portal befindet sich noch in der Beta-Phase.
                 </div>
-
                 <div class="info-title">Demoportal FoxNoten</div>
-
                 <div class="info-subtitle">Weitere Information</div>
                 <a href="#" class="info-link">FoxNoten</a>
                 <a href="#" class="info-link">FoxWiki</a>
-
                 <div class="info-subtitle">Informationen</div>
-                <p class="info-text">
-                    Diese Webseite verwendet Cookies, welche die technische Funktionalität und Sicherheit gewährleisten. Mit der weiteren Nutzung von FoxNoten erklären Sie sich damit einverstanden.
-                </p>
-
-                <div class="info-footer-links">
-                    <a href="#">Information zum Datenschutz</a> | <a href="#">Impressum</a>
-                </div>
-
+                <p class="info-text">Diese Webseite verwendet Cookies, welche die technische Funktionalität und Sicherheit gewährleisten...</p>
+                <div class="info-footer-links"><a href="#">Information zum Datenschutz</a> | <a href="#">Impressum</a></div>
             </div>
         </div>
 
     </div>
 
     <div class="footer-bar">
-        <strong>Schuljahr:</strong> 2026 / 2. HJ &nbsp;|&nbsp; 
-        <a href="#">Datenschutz</a> &nbsp;|&nbsp; 
-        <a href="#">Impressum</a> &nbsp;|&nbsp; 
-        Version: 1.0.0 &nbsp;|&nbsp; 
-        &copy; FoxMedia, 2014-2026
+        <strong>Schuljahr:</strong> 2026 / 2. HJ &nbsp;|&nbsp; &copy; FoxMedia, 2014-2026
     </div>
 
+    <script>
+        function setRole(role) {
+            const userRoleInput = document.getElementById('userRole');
+            const mainTitle = document.getElementById('mainTitle');
+            const infoContent = document.getElementById('infoContent');
+            const submitBtn = document.getElementById('submitBtn');
+            const lehrerBtn = document.getElementById('lehrerBtn');
+            const schuelerBtn = document.getElementById('schuelerBtn');
+
+            userRoleInput.value = role;
+
+            if (role === 'lehrer') {
+                // Buttons visuell umschalten
+                lehrerBtn.classList.remove('inactive');
+                schuelerBtn.classList.add('inactive');
+
+                // Texte & Inhalte für LEHRER
+                mainTitle.innerHTML = "Willkommen in FoxNoten - <strong>Demoportal FoxNoten</strong>";
+                submitBtn.innerText = "Anmelden";
+                
+                infoContent.innerHTML = `
+                    <div class="demo-banner"><strong>Demo-Version!</strong> DEMO-PORTAL-ANMELDEINFORMATIONEN.</div>
+                    <div class="info-title">Demoportal FoxNoten</div>
+                    <div class="info-subtitle">Weitere Information</div>
+                    <a href="#" class="info-link">FoxNoten</a>
+                    <a href="#" class="info-link">FoxWiki</a>
+                    <div class="info-subtitle">Informationen</div>
+                    <p class="info-text">Diese Webseite verwendet Cookies, welche die technische Funktionalität und Sicherheit gewährleisten. Mit der weiteren Nutzung von FoxNoten erklären Sie sich damit einverstanden.</p>
+                    <div class="info-footer-links"><a href="#">Information zum Datenschutz</a> | <a href="#">Impressum</a></div>
+                `;
+            } else {
+                // Buttons visuell umschalten
+                schuelerBtn.classList.remove('inactive');
+                lehrerBtn.classList.add('inactive');
+
+                // Texte & Inhalte für SCHÜLER
+                mainTitle.innerHTML = "<strong>Digitale Lernplattform</strong>";
+                submitBtn.innerText = "Login";
+
+                infoContent.innerHTML = `
+                    <div class="info-title">Weitere Information</div>
+                    <a href="#" class="info-link">Dokumentation / Hilfe</a>
+                    <p class="info-text" style="margin-top: 10px;">Diese Webseite verwendet Cookies, welche die technische Funktionalität und Sicherheit gewährleisten. Mit der weiteren Nutzung von FoxNoten erklären Sie sich damit einverstanden.</p>
+                    <div class="info-footer-links"><a href="#">Information zum Datenschutz</a> | <a href="#">Impressum</a></div>
+                `;
+            }
+        }
+    </script>
 </body>
 </html>
