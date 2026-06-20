@@ -1,0 +1,12 @@
+{
+  "name": "foxnoten-schulrp",
+  "version": "1.0.0",
+  "description": "Digitales Klassenbuch für Roblox Schul-RP",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
